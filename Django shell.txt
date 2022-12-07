@@ -1,0 +1,163 @@
+(venv) PS C:\Users\eagle\OneDrive\Документы\NewsPortal\newsportal> python manage.py shell
+Python 3.10.8 (tags/v3.10.8:aaaf517, Oct 11 2022, 16:50:30) [MSC v.1933 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from portal.models import *
+>>> U1 = User.object.create_user('Danila')
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: type object 'User' has no attribute 'object'
+>>> U1 = User.objects.create_user('Danila') 
+>>> U1
+<User: Danila>
+>>> U2 = User.objects.create_user('Artem')  
+>>> Author.objects.create(authorUser = U1)
+<Author: Author object (1)>
+>>> Author.objects.create(authorUser = U2) 
+<Author: Author object (2)>
+>>> Category.objects.create(name = 'IKT')
+<Category: Category object (1)>
+>>> Category.objects.create(name = 'NF')  
+<Category: Category object (2)>
+>>> Category.objects.create(name = 'Fantasy') 
+<Category: Category object (3)>
+>>> Category.objects.create(name = 'History') 
+<Category: Category object (4)>
+>>> author1 = Author.objects.get(id=1)
+>>> author1
+<Author: Author object (1)>
+>>> Post.objects.create(author=author1, categoryType='NW', title = 'титульник', text = 'Тут что-то написано')
+<Post: Post object (1)>
+>>> Post.objects.get(id=1).text
+'Тут что-то написано'
+>>> author2 = Author.objects.get(id=2) 
+>>> Post.objects.create(author=author2, categoryType='NW', title = 'еще один титульник новостей', text = 'Какая-то интересная новость')
+<Post: Post object (2)>
+>>> Post.objects.create(author=author1, categoryType='AR', title = 'Статья о чем-то', text = 'Интересный текст')    
+<Post: Post object (3)>
+>>> Post.objects.create(author=author2, categoryType='AR', title = 'Интересное название статьи', text = 'Здесь самое интересное')       
+<Post: Post object (4)>
+>>> Post.objects.det(id=1).postCategory.add(Category.object.get(id=1))
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'Manager' object has no attribute 'det'
+>>> Post.objects.get(id=1).postCategory.add(Category.object.get(id=1)) 
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: type object 'Category' has no attribute 'object'
+>>> Post.objects.get(id=1).postCategory.add(Category.objects.get(id=1)) 
+>>> Post.objects.get(id=1).postCategory.add(Category.objects.get(id=3)) 
+>>> Post.objects.get(id=2).postCategory.add(Category.objects.get(id=2)) 
+>>> Post.objects.get(id=3).postCategory.add(Category.objects.get(id=3)) 
+>>> Post.objects.get(id=4).postCategory.add(Category.objects.get(id=4)) 
+>>> Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=1).authorUser, text='отличная новость') 
+<Comment: Comment object (1)>
+>>> Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=2).authorUser, text='отличная новость') 
+<Comment: Comment object (2)>
+>>> Comment.objects.create(commentPost=Post.objects.get(id=2), commentUser=Author.objects.get(id=2).authorUser, text='отличная новость') 
+<Comment: Comment object (3)>
+>>> Comment.objects.create(commentPost=Post.objects.get(id=3), commentUser=Author.objects.get(id=2).authorUser, text='отличная новость') 
+<Comment: Comment object (4)>
+>>> Comment.objects.create(commentPost=Post.objects.get(id=4), commentUser=Author.objects.get(id=1).authorUser, text='intresting новость') 
+<Comment: Comment object (5)>
+>>> Comment.objects.get(id=1).like()
+>>> Comment.objects.get(id=1).like()
+>>> Comment.objects.get(id=3).like() 
+>>> Comment.objects.get(id=3).like()
+>>> Comment.objects.get(id=3).like()
+>>> Comment.objects.get(id=4).like() 
+>>> Comment.objects.get(id=4).like()
+>>> Comment.objects.get(id=4).like()
+>>> Comment.objects.get(id=4).like()
+>>> Comment.objects.get(id=1).like() 
+>>> Comment.objects.get(id=1).like()
+>>> Comment.objects.get(id=2).dislike() 
+>>> Comment.objects.get(id=2).dislike()
+>>> Comment.objects.get(id=2).dislike()
+>>> Comment.objects.get(id=2).dislike()
+>>> Comment.objects.get(id=5).dislike() 
+>>> Comment.objects.get(id=5).dislike()
+>>> Comment.objects.get(id=4).like()    
+>>> author1
+<Author: Author object (1)>
+>>> author1.update_rating()
+>>> author2.update_rating() 
+>>> author2.ratingAuthor   
+4
+>>> author1.ratingAuthor 
+2
+>>> Comment.objects.get(id=1).like() 
+>>> Comment.objects.get(id=1).like()
+>>> Comment.objects.get(id=3).dislike() 
+>>> author2.ratingAuthor                
+4
+>>> author1.update_rating()             
+>>> author2.update_rating()             
+>>> author2.ratingAuthor    
+3
+>>> author1.ratingAuthor 
+4
+>>> b = Author.objects.order_by('-ratingAuthor')[:1]
+>>> b
+<QuerySet [<Author: Author object (1)>]>
+>>> for i in b:
+...     i.raitingAuthor
+...     i.authorUser.username
+... 
+Traceback (most recent call last):
+  File "<console>", line 2, in <module>
+AttributeError: 'Author' object has no attribute 'raitingAuthor'
+>>> for i in b:     hor   ame
+...     i.ratingAuthor 
+...     i.authorUser.username
+... 
+4
+'Danila'
+>>> c = Comment.objects.order_by('-rating')[:1]
+>>> c
+<QuerySet [<Comment: Comment object (1)>]>
+>>> for i in c:
+...     i.dateCreation
+...     i.commentUser.username
+...     i.rating
+...       
+datetime.datetime(2022, 12, 7, 19, 49, 51, 640349, tzinfo=datetime.timezone.utc)
+'Danila'
+6
+>>> Post.objects.get(id=1).like()
+>>> Post.objects.get(id=1).like()
+>>> Post.objects.get(id=2).like() 
+>>> Post.objects.get(id=2).like()
+>>> Post.objects.get(id=2).like()
+>>> Post.objects.get(id=2).like()
+>>> Post.objects.get(id=3).like() 
+>>> Post.objects.get(id=3).like()
+>>> Post.objects.get(id=3).like()
+>>> Post.objects.get(id=4).dislike() 
+>>> Post.objects.get(id=4).dislike()
+>>> p = Post.objects.order_by('-rating')[:1]    
+>>> p
+<QuerySet [<Post: Post object (2)>]>
+>>> for i in p:
+...     i.dateCreation
+...     i.author.authorUser.username
+...     i.rating
+...     i.title
+...     i.preview()
+... 
+datetime.datetime(2022, 12, 7, 19, 37, 50, 106146, tzinfo=datetime.timezone.utc)
+'Artem'
+4
+'еще один титульник новостей'
+'Какая-то интересная новость...'
+>>> for i in p:
+...     Comment.objects.get(commentPost = i).dateCreation
+...     Comment.objects.get(commentPost = i).commentUser.username
+...     Comment.objects.get(commentPost = i).rating
+...     Comment.objects.get(commentPost = i).text
+... 
+datetime.datetime(2022, 12, 7, 19, 50, 30, 280686, tzinfo=datetime.timezone.utc)
+'Artem'
+2
+'отличная новость'
+>>>
